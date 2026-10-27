@@ -12,22 +12,22 @@ export default async (request) => {
     const chatId = process.env.TELEGRAM_CHAT_ID;
 
     if (!token || !chatId) {
-      throw new Error("Telegram settings missing");
+      console.error("Missing Telegram environment variables");
+      return Response.json(
+        { success: false, error: "Missing Telegram settings in Netlify" },
+        { status: 500 }
+      );
     }
 
     const fields = Object.entries(data)
-      .map(([key, value]) =>
-        `${key}: ${String(value).slice(0, 1000)}`
-      )
+      .map(([key, value]) => `${key}: ${String(value).slice(0, 1000)}`)
       .join("\n");
 
-    const response = await fetch(
+    const tgResponse = await fetch(
       `https://api.telegram.org/bot${token}/sendMessage`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: chatId,
           text: `🔔 Новая заявка с сайта!\n\n${fields}`
@@ -35,14 +35,26 @@ export default async (request) => {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Telegram delivery failed");
+    const tgResult = await tgResponse.json();
+
+    if (!tgResponse.ok || !tgResult.ok) {
+      console.error("Telegram API error:", tgResult.error_code, tgResult.description);
+      return Response.json(
+        {
+          success: false,
+          error: "Telegram API error",
+          code: tgResult.error_code,
+          description: tgResult.description
+        },
+        { status: 502 }
+      );
     }
 
     return Response.json({ success: true });
   } catch (error) {
+    console.error("Lead function error:", error);
     return Response.json(
-      { success: false, error: "Could not send lead" },
+      { success: false, error: "Server error" },
       { status: 500 }
     );
   }
