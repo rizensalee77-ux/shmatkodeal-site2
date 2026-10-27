@@ -608,7 +608,7 @@ nav.bc{margin:0!important;overflow:visible;gap:8px}nav.bc a{padding:0!important;
 <div id="ok" hidden><h3>Заявку отримано</h3><p style="color:var(--mut)">Ми напишемо вам у вказаний контакт і надішлемо реквізити для оплати та подальші кроки.</p><div class="row"><a id="pl" class="btn" hidden rel="noopener">Оплатити зараз</a><button class="btn o" onclick="cl()">Закрити</button></div></div></dialog>
 <script>
 // Telegram-канал Growth Studio. Заявки надсилаються окремим сервером після заповнення .env.
-const CFG={brand:'Growth Studio',api:'/api/lead',tgChannel:'https://t.me/+7Qrjm0zGwJw2MjUy',tgContact:''};
+const CFG={brand:'Growth Studio',api:'/.netlify/functions/telegram-lead',tgChannel:'https://t.me/+7Qrjm0zGwJw2MjUy',tgContact:''};
 // Необов’язково: прямі посилання на оплату (monobank/WayForPay). Порожнє = клієнт просто залишає заявку.
 const PAY={pack:'',scripts:'',bot:'',bundle:'',audit:'',plan:'',full:''};
 const ok=u=>/^https:\/\//.test(u||'')&&!/ВАШ/.test(u);
